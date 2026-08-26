@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 import devtoolsJson from 'vite-plugin-devtools-json';
@@ -6,7 +8,24 @@ import { behaviorsPlugin } from './src/viz/sceneRuntime/viteBehaviorsPlugin.ts';
 import { generatorsPlugin } from './src/viz/levelDef/viteGeneratorsPlugin.ts';
 import { generatedScenesPlugin } from './src/viz/scenes/viteGeneratedScenesPlugin.ts';
 
+const root = path.dirname(fileURLToPath(import.meta.url));
+const vercelPlaytest = !!process.env.VERCEL;
+
 const config = defineConfig({
+  resolve: vercelPlaytest
+    ? {
+        alias: [
+          {
+            find: /geoscript[/\\]geoscriptExecutor(?:\.ts)?$/,
+            replacement: path.join(root, 'src/playtest/geoscriptExecutorStub.ts'),
+          },
+          {
+            find: /levelDef[/\\]loadLevelDef(?:\.ts)?$/,
+            replacement: path.join(root, 'src/playtest/loadLevelDefStub.ts'),
+          },
+        ],
+      }
+    : {},
   plugins: [
     // Must run before `sveltekit()` so its `config()` hook writes the
     // `src/routes/(generated)/` tree before SvelteKit walks the routes dir.

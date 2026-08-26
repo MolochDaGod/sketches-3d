@@ -12,6 +12,7 @@ const config = {
       src: fileURLToPath(new URL('./src', import.meta.url)),
     },
     inlineStyleThreshold: 2048 * 2,
+    ...(process.env.VERCEL ? { files: { routes: 'src/playtest-routes' } } : {}),
     prerender: {
       concurrency: 6,
     },

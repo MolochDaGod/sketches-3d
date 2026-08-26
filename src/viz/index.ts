@@ -38,7 +38,7 @@ import type { Unsubscriber } from 'svelte/store';
 import { unmount } from 'svelte';
 import type { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { LoadOrbitControls } from './preloadCache';
-import { loadLevelDef, type LevelLoadHandle } from './levelDef/loadLevelDef';
+import { loadLevelDef, type LevelLoadHandle } from 'src/viz/levelDef/loadLevelDef';
 import { GeoscriptExecutor } from 'src/geoscript/geoscriptExecutor';
 import type { LevelDef } from './levelDef/types';
 import { OverlayMSAARenderer } from './gizmos/overlayMSAA';

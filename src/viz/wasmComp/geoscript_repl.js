@@ -1,1 +1,1 @@
-﻿export default function init() { return Promise.resolve(); }
+export default async function init(_mod) {}
