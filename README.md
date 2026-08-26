@@ -1,19 +1,60 @@
-# 3D Sketches + Experiments
+# sketches-3d (Grudge fork)
 
-This holds the outputs of my foray into 3D modeling, shaders, Three.JS, and psuedo-gamedev. It consists of a variety of scenes, sketches, and experiments that I created while learning and exploring the tech and methods involved with creating interactive 3D content that runs in the browser.
+Grudge Studio fork of [Ameobea/sketches-3d](https://github.com/Ameobea/sketches-3d).  
+This tree is the **new-game test harness**: Nexus modular character designs on the existing AmmoJS / Three.js parkour player, with **Destiny 2-style mobility** (sprint, jump, air dash, floaty air control) — not a second controller.
 
-| ![A screenshot of one of the 3D game-like demos I've been working on.  Shows a floating bridge with a pixelated texture and some metal arches, a brightly-colored green and red sky, and maroon fog over the bridge's surface](https://i.ameo.link/abw.png) | ![A screenshot of one of the 3D sketches I created as a part of this project.  A golden arch made out of a metallic-rocky material stands on a concrete plinth.  It sits in what looks like a sort of shrine with curved stone arches.  There is a cobblestone floor and stone walls.  The graphics are remiscent of PS2 games or similar style.](https://i.ameo.link/azv.png) |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Hub | Mobility lab |
+| --- | --- |
+| **`nexus`** scene — portal lobby (`src/viz/scenes/nexus`) | **`movement_v2`**, `boost_nova`, `jump_pad_speedup_test`, `plats` |
 
-## In-Browser Demos
+Live Ground (same toon roster, production): [GrudgeSpaceRTS `/ground`](https://grudge-space-rts.vercel.app/) · toons on CDN `assets.grudge-studio.com/models/characters/{gender}/{id}.gltf`
 
-- [Pinklights ![A screenshot of the pinklights scene.  It shows a bright panel in the background with dark slats over it which is casting long horizontal shadows over a rocky-looking pixelated ground.  There are some hills around the area and the camera is placed in a small valley.  It looks kind of like if you were inside a terrarium.](https://i.ameo.link/azt.png)](https://3d.ameo.design/pinklights.html)
-- [Bridge2 ![A screenshot of the bridge scene.  It shows a pastel-colored sky in the background with a yellow sun disc.  There are some floating geometric monoliths on the left, and some dark wall-like structures on the right casting prominent shadows.  The ground looks to be rocky with embedded metal that reflects golden in the light.](https://i.ameo.link/azu.png)](https://3d.ameo.design/bridge2.html)
-- [Rainy ![A screenshot of the rainy scene.  It is a dark gray scene with a black railing and some concrete pillars, like a long balcony that is part of an apartment complex.  There are many dark concrete skyscrapers in the background, blurring into the background as they go further back into the distance.](https://i.ameo.link/ayc.png)](https://3d.ameo.design/rainy.html)
-- [Particle Conduit ![A screenshot of the particle conduit sketch.  Strings of colored particles stream through space.  A control panel configuring the simulation params exists on the right.](https://i.ameo.link/azx.png)](https://3d.ameo.design/blink.html)
+Testing SSOT: [`notes/game-testing.md`](notes/game-testing.md)
 
-## Tech
+---
 
-Most of the stuff here is built using Blender, Three.JS, and some custom shaders. It will all run in the browser, targeting desktop devices with mouse + keyboard. SvelteKit is used as a lightweight framework for wrapping everything up and bundling releases.
+## New game testing (this fork)
 
-Include audio integration that is generated in realtime also in the browser via my [web-synth](https://github.com/ameobea/web-synth) project.
+### Nexus modular characters
+
+Roster SSOT is **not** grudge6 race kits. It is the baked Nexus / Grudges toon pack used by Ground:
+
+- Code: `GrudgeSpaceRTS/src/dangerroom/nexus/nexusToons.ts`
+- Stats: BIO · NEU · KIN · QNT · SYN · CHR · ENT · GRA (`attributes.ts`, 20-point buy)
+- Origins: military / scientist / medic / engineer / drifter / psionic — **no** knight/warrior/mage/ranger classes
+- Clips: idle / walk / run / jump / attack with name fallbacks
+
+Male: adventurer, beach, casual, casual-hoodie, farmer, king, punk, **spacesuit**, suit, swat, worker  
+Female: adventurer, casual, formal, medieval, punk, **scifi**, soldier, suit, witch, worker
+
+**spacesuit** + **scifi** are the default vanguard bodies for space traversal tests.
+
+### Destiny-like mobility (extend existing player)
+
+Do **not** add a second mixer, physics world, or `three-player-controller` on the same body. Tune `SceneConfig.player` on the Ammo capsule already in `src/viz/collision.ts`:
+
+| D2 feel | Existing knob |
+| --- | --- |
+| Sprint | `moveSpeed.onGround` |
+| Jump | `jumpVelocity` |
+| Air control / float | `moveSpeed.inAir` + `externalVelocityAirDampingFactor` |
+| Air dash | `dashConfig.enable` (hub already on, infinite charges) |
+| Low-G / space | `gravity` (hub is 30) scaled by GRA |
+| Kinetic punch | KIN seeds melee range/speed on Ground |
+
+Hub defaults today (`nexus.ts`): ground 10, air 13, jump 12, dash on, gravity 30, capsule 2.2 × 1.14.
+
+**Play:** `nexus` → portal **MOVEMENT V2**. Also `boost_nova`, `jump_pad_speedup_test`, `plats`, `tutorial`.
+
+---
+
+# 3D Sketches + Experiments (upstream)
+
+Upstream home of Geotoy / Geoscript and the original browser sketches. Built with Blender, Three.js, custom shaders, SvelteKit. Desktop mouse + keyboard. Audio via [web-synth](https://github.com/ameobea/web-synth).
+
+## In-Browser Demos (Ameobea originals)
+
+- [Pinklights](https://3d.ameo.design/pinklights.html)
+- [Bridge2](https://3d.ameo.design/bridge2.html)
+- [Rainy](https://3d.ameo.design/rainy.html)
+- [Particle Conduit](https://3d.ameo.design/blink.html)

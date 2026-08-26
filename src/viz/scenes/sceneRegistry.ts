@@ -239,7 +239,11 @@ export const SCENE_REGISTRY: Record<string, SceneRegistryEntry> = {
     sceneName: 'Scene',
     gltfName: 'nexus',
     extension: 'glb',
-    metadata: { title: 'nexus' },
+    metadata: {
+      title: 'Nexus — new game hub',
+      description:
+        'Grudge new-game lobby. Test Nexus modular toon designs and Destiny-like mobility (sprint, jump, air dash, floaty air control) on the existing Ammo capsule. Portals into movement_v2, plats, boost_nova. Not a second controller; not grudge6 race kits.',
+    },
     legacyLights: false,
   },
   csgSandbox: {
@@ -255,7 +259,11 @@ export const SCENE_REGISTRY: Record<string, SceneRegistryEntry> = {
     sceneName: 'Scene',
     gltfName: 'movement_v2',
     extension: 'glb',
-    metadata: { title: 'Movement V2' },
+    metadata: {
+      title: 'Movement V2 — Destiny mobility lab',
+      description:
+        'Timed parkour for Destiny 2-style air control, dash, and jump. Same Ammo player as the Nexus hub. KIN/GRA stats from Ground should feel like sprint vs float here.',
+    },
     legacyLights: false,
   },
   infinite: {
