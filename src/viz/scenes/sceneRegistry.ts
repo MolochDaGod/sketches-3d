@@ -242,7 +242,7 @@ export const SCENE_REGISTRY: Record<string, SceneRegistryEntry> = {
     metadata: {
       title: 'Nexus — new game hub',
       description:
-        'Grudge new-game lobby. Test Nexus modular toon designs and Destiny-like mobility (sprint, jump, air dash, floaty air control) on the existing Ammo capsule. Portals into movement_v2, plats, boost_nova. Not a second controller; not grudge6 race kits.',
+        'Grudge production-character TPS play-test lobby (3d.grudge.studio/nexus). Ground CDN toons on the existing Ammo capsule. Destiny-like mobility. Not grudge6 loadRaceKit.',
     },
     legacyLights: false,
   },

@@ -7,7 +7,9 @@ This tree is the **new-game test harness**: Nexus modular character designs on t
 | --- | --- |
 | **`nexus`** scene — portal lobby (`src/viz/scenes/nexus`) | **`movement_v2`**, `boost_nova`, `jump_pad_speedup_test`, `plats` |
 
-Live Ground (same toon roster, production): [GrudgeSpaceRTS `/ground`](https://grudge-space-rts.vercel.app/) · toons on CDN `assets.grudge-studio.com/models/characters/{gender}/{id}.gltf`
+**Play-test lobby:** [https://3d.grudge.studio/nexus](https://3d.grudge.studio/nexus) — third-person production Ground toons on the existing Ammo capsule (`?toon=male:spacesuit` default). Upstream Ameo hub stays first-person at [3d.ameo.design/nexus](https://3d.ameo.design/nexus).
+
+Live Ground (same toon roster): [GrudgeSpaceRTS `/ground`](https://grudge-space-rts.vercel.app/) · CDN `assets.grudge-studio.com/models/characters/{gender}/{id}.gltf`
 
 Testing SSOT: [`notes/game-testing.md`](notes/game-testing.md)
 

@@ -26,6 +26,8 @@ import PlatformColorShader from './shaders/platform/color.frag?raw';
 import PlatformRoughnessShader from './shaders/platform/roughness.frag?raw';
 import { resolve } from '$app/paths';
 import { dev } from '$app/environment';
+import { loadNexusPlayBody } from './nexusPlayBody';
+import { getPlayerColliderCenterToFeetOffset } from 'src/viz/physicsConfig';
 
 const loadTextures = async () => {
   const loader = new THREE.ImageBitmapLoader();
@@ -76,6 +78,20 @@ export const processLoadedScene = async (
   // kick off request for physics engine wasm early.  This normally has to wait until after
   // this function returns, but we know we're going to be first-person so we can start it now
   getAmmoJS();
+
+  const colliderHeight = 2.2;
+  const colliderRadius = 1.14;
+  const centerToFeet = getPlayerColliderCenterToFeetOffset('capsule', colliderHeight, colliderRadius);
+  let playBody: THREE.Object3D | undefined;
+  try {
+    playBody = await loadNexusPlayBody(viz, {
+      height: colliderHeight,
+      radius: colliderRadius,
+      centerToFeet,
+    });
+  } catch (err) {
+    console.warn('[nexus] production toon unavailable — capsule-only until CDN 200', err);
+  }
 
   const ambientLight = new THREE.AmbientLight(0xffffff, 2.8);
   viz.scene.add(ambientLight);
@@ -631,12 +647,23 @@ float getCustomRoughness(vec3 pos, vec3 normal, float baseRoughness, float curTi
   return {
     spawnLocation: 'spawn',
     gravity: 30,
+    viewMode: {
+      type: 'thirdPerson',
+      distance: 11,
+      cameraFOV: 70,
+      zoomEnabled: true,
+      minZoomDistance: 4,
+      maxZoomDistance: 18,
+      initialPolarAngle: Math.PI / 2.35,
+      initialAzimuthAngle: Math.PI,
+    },
     player: {
       playerColliderShape: 'capsule',
       moveSpeed: { onGround: 10, inAir: 13 },
-      colliderSize: { height: 2.2, radius: 1.14 },
+      colliderSize: { height: colliderHeight, radius: colliderRadius },
       jumpVelocity: 12,
       oobYThreshold: -80,
+      mesh: playBody,
       dashConfig: {
         enable: true,
         useExternalVelocity: true,

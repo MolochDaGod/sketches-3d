@@ -273,10 +273,10 @@ export interface SceneConfig {
     minJumpDelaySeconds?: number;
     oobYThreshold?: number;
     /**
-     * If provided, this mesh will be added to the world and moved in sync with the player.  This is not
-     * usually needed in `firstPerson` view mode, but is useful for `top-down` mode.
+     * If provided, this object is added to the world and moved in sync with the player
+     * (capsule center). Needed for third-person / top-down visuals.
      */
-    mesh?: THREE.Mesh;
+    mesh?: THREE.Object3D;
     /** Renders a circular shadow beneath the player on custom shader materials. */
     playerShadow?: PlayerShadowParams;
   };

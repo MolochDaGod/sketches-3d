@@ -696,7 +696,9 @@ export class BulletPhysics {
       (_curTimeSecs, tDiffSecs) => {
         const newPlayerPos = this.updateCollisionWorld(tDiffSecs);
         if (this.viz.sceneConf.player?.mesh) {
-          this.viz.sceneConf.player.mesh.position.copy(newPlayerPos);
+          const mesh = this.viz.sceneConf.player.mesh;
+          mesh.position.copy(newPlayerPos);
+          mesh.userData.nexusPlayTick?.(this.viz, tDiffSecs);
         }
         if (this.viz.sceneConf.player?.playerShadow) {
           const feetY = newPlayerPos.y - this.playerColliderCenterToFeetOffset;

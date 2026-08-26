@@ -50,6 +50,7 @@ Hub (`nexus.ts`) now: `gravity: 30`, ground 10, air 13, jump 12, dash on.
 
 **Pass**
 
+- [x] `/nexus` third-person + Ground CDN toon (`?toon=male:spacesuit` default; `female:scifi`)
 - [ ] spacesuit or scifi toon loads from CDN (or Ground `/ground` if this scene still uses default capsule)
 - [ ] idle/walk/run/jump clips resolve via `NEXUS_TOON_ANIM_FALLBACKS`
 - [ ] dash in air does not reset vertical velocity to zero (`useExternalVelocity: true`)

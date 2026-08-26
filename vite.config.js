@@ -25,6 +25,11 @@ const config = defineConfig({
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),
       },
+      '/cdn-assets': {
+        target: 'https://assets.grudge-studio.com',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/cdn-assets/, ''),
+      },
     },
     watch: {
       ignored: p =>
@@ -32,7 +37,7 @@ const config = defineConfig({
         /[\\/](?:backend|geoscript_backend)(?:[\\/]|$)/.test(p) ||
         /[\\/]src[\\/]viz[\\/]wasm(?:[\\/]|$)/.test(p),
     },
-    allowedHosts: ['3d.p.ameo.design'],
+    allowedHosts: ['3d.p.ameo.design', '3d.grudge.studio', '3d.grudge-studio.com'],
   },
   optimizeDeps: {
     exclude: ['codemirror'],
