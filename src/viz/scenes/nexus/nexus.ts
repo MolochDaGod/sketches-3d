@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { goto } from '$app/navigation';
 import { N8AOPostPass } from 'n8ao';
 
 import type { Viz } from 'src/viz';
@@ -24,9 +23,8 @@ import { MetricsAPI } from 'src/api/client';
 import { logDreamEvent } from 'src/analytics';
 import PlatformColorShader from './shaders/platform/color.frag?raw';
 import PlatformRoughnessShader from './shaders/platform/roughness.frag?raw';
-import { resolve } from '$app/paths';
 import { dev } from '$app/environment';
-import { loadNexusPlayBody } from './nexusPlayBody';
+import { loadNexusPlayBody, nexusPortalGoto } from './nexusPlayBody';
 import { getPlayerColliderCenterToFeetOffset } from 'src/viz/physicsConfig';
 
 const loadTextures = async () => {
@@ -410,7 +408,7 @@ float getCustomRoughness(vec3 pos, vec3 normal, float baseRoughness, float curTi
         fpCtx.addPlayerRegionContactCb({ type: 'convexHull', mesh: portal }, () => {
           logDreamEvent('game', 'portal_travel', { to: def.scene.slice(1) });
           MetricsAPI.recordPortalTravel(def.scene.slice(1));
-          goto(resolve(def.scene), { keepFocus: true });
+          nexusPortalGoto(def.scene);
         });
       } else {
         portal.visible = false;

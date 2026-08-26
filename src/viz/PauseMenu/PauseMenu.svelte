@@ -21,7 +21,7 @@
   import GameplayMenu from './GameplayMenu.svelte';
   import LoginMenu from './LoginMenu.svelte';
   import { page } from '$app/state';
-  import { goto } from '$app/navigation';
+  import { nexusPortalGoto } from '../scenes/nexus/nexusPlayBody';
   import { API, refetchUser, setUserLoggedOut } from 'src/api/client';
   import { ResponseError } from 'src/api/runtime';
   import type { AuthAPI } from './AuthAPI';
@@ -136,10 +136,7 @@
             on:click={() => {
               ctx.onResume();
               viz.maybeResumeViz(true);
-              void goto('/nexus', { keepFocus: true }).then(() => {
-                ctx.onResume();
-                viz.maybeResumeViz(true);
-              });
+              nexusPortalGoto('/nexus');
             }}
           >
             Return to Nexus

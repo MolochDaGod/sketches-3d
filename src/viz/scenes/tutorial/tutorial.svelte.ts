@@ -9,10 +9,9 @@ import { Score, type ScoreThresholds } from 'src/viz/parkour/timeDisplayTypes';
 import { initPylonsPostprocessing } from '../pkPylons/postprocessing';
 import { createSignboard, type CreateSignboardArgs } from 'src/viz/helpers/signboardBuilder';
 import type { CustomShaderMaterial } from 'src/viz/shaders/customShader';
-import { goto } from '$app/navigation';
 import { MetricsAPI } from 'src/api/client';
 import { logDreamEvent } from 'src/analytics';
-import { resolve } from '$app/paths';
+import { nexusPortalGoto } from '../nexus/nexusPlayBody';
 
 const locations = {
   spawn: {
@@ -185,13 +184,13 @@ const setupScene = (
     fpCtx.addPlayerRegionContactCb({ type: 'convexHull', mesh: nextLevelTP }, () => {
       logDreamEvent('game', 'portal_travel', { to: 'nexus' });
       MetricsAPI.recordPortalTravel('nexus');
-      goto(resolve('/nexus'), { keepFocus: true });
+      nexusPortalGoto('/nexus');
     });
 
     fpCtx.addPlayerRegionContactCb({ type: 'convexHull', mesh: backToNexusTP }, () => {
       logDreamEvent('game', 'portal_travel', { to: 'movement_v2' });
       MetricsAPI.recordPortalTravel('movement_v2');
-      goto(resolve('/movement_v2'), { keepFocus: true });
+      nexusPortalGoto('/movement_v2');
     });
   });
 

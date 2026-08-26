@@ -43,6 +43,7 @@ import { GeoscriptExecutor } from 'src/geoscript/geoscriptExecutor';
 import type { LevelDef } from './levelDef/types';
 import { OverlayMSAARenderer } from './gizmos/overlayMSAA';
 import { FrameGovernor, MAX_FRAME_DELTA_SECONDS } from './frameGovernor';
+import { hydrateNexusPlay } from './scenes/nexus/nexusPlayBody';
 
 // `RectAreaLight`s render with undefined data unless their LTC lookup textures
 // are bound. `init()` recreates them, so it's guarded to run once.
@@ -1233,6 +1234,7 @@ export const initViz = (
       ...buildDefaultSceneConfig(),
       ...((await sceneLoader(viz, scene, vizConfig.current, userData)) ?? {}),
     };
+    await hydrateNexusPlay(viz, sceneConf, sceneDef);
     viz.sceneConf = sceneConf;
     const rawSpawnPos = sceneConf.locations[sceneConf.spawnLocation];
     viz.spawnPos = {

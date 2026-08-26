@@ -11,10 +11,9 @@ import { buildAndAddFractals } from './3DvicsekFractal';
 import { Locations } from './locations';
 import { configurePostprocessing } from './postprocessing';
 import BgMonolithColorShader from './shaders/bgMonolith/color.frag?raw';
-import { goto } from '$app/navigation';
 import { MetricsAPI } from 'src/api/client';
 import { logDreamEvent } from 'src/analytics';
-import { resolve } from '$app/paths';
+import { nexusPortalGoto } from '../nexus/nexusPlayBody';
 
 export const processLoadedScene = async (
   viz: Viz,
@@ -306,7 +305,7 @@ export const processLoadedScene = async (
       () => {
         logDreamEvent('game', 'portal_travel', { to: 'cave' });
         MetricsAPI.recordPortalTravel('cave');
-        goto(resolve('/cave'), { keepFocus: true });
+        nexusPortalGoto('/cave');
       }
     )
   );

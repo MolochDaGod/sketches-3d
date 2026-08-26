@@ -1,4 +1,3 @@
-import { goto } from '$app/navigation';
 import { EffectPass, KernelSize, SelectiveBloomEffect } from 'postprocessing';
 import * as THREE from 'three';
 
@@ -21,7 +20,7 @@ import { getRuneGenerator } from './runeGen/runeGen';
 import MonolithLightBeamColorShader from './shaders/monolithLightBeam/color.frag?raw';
 import TotemBeamColorShader from './shaders/totemBeam/color.frag?raw';
 import { MetricsAPI } from 'src/api/client';
-import { resolve } from '$app/paths';
+import { nexusPortalGoto } from '../nexus/nexusPlayBody';
 
 const locations: SceneLocations = {
   spawn: {
@@ -518,7 +517,7 @@ export const processLoadedScene = async (
         logDreamEvent('stone', 'level_complete', { play_time_seconds: Math.round(curTimeSeconds) });
         logDreamEvent('game', 'portal_travel', { to: 'construction' });
         MetricsAPI.recordPortalTravel('construction');
-        goto(resolve(nextLevelURL), { keepFocus: true });
+        nexusPortalGoto(nextLevelURL);
       }
     );
   });

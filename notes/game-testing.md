@@ -51,6 +51,8 @@ Hub (`nexus.ts`) now: `gravity: 30`, ground 10, air 13, jump 12, dash on.
 **Pass**
 
 - [x] `/nexus` third-person + Ground CDN toon (`?toon=male:spacesuit` default; `female:scifi`)
+- [x] portal `goto` keeps `?toon=` + session physics (F8) on every physics scene
+- [x] F8 ControlPanel edits gravity, MM ground/air, jump velocity, dash distance on the Ammo player
 - [ ] spacesuit or scifi toon loads from CDN (or Ground `/ground` if this scene still uses default capsule)
 - [ ] idle/walk/run/jump clips resolve via `NEXUS_TOON_ANIM_FALLBACKS`
 - [ ] dash in air does not reset vertical velocity to zero (`useExternalVelocity: true`)
