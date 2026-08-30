@@ -1,5 +1,7 @@
 /**
  * Production Nexus play body for the /nexus lobby.
+ * Reverted pose hacks. Engine copies mesh to capsule center.
+ * Local Y is the single plant. Tick writes yaw only.
  */
 import * as THREE from 'three';
 import { goto } from '$app/navigation';
@@ -25,11 +27,7 @@ const TOON_SESSION_KEY = 'nexus.toon';
 const PHYS_SESSION_KEY = 'nexus.physics';
 
 export type NexusPlayPhysics = {
-  gravity: number;
-  onGround: number;
-  inAir: number;
-  jumpVelocity: number;
-  dashMagnitude: number;
+  gravity: number; onGround: number; inAir: number; jumpVelocity: number; dashMagnitude: number;
 };
 export const NEXUS_PLAY_DEFAULTS: NexusPlayPhysics = {
   gravity: 30, onGround: 10, inAir: 13, jumpVelocity: 12, dashMagnitude: 16,
@@ -59,9 +57,7 @@ export function parseNexusToonQuery(search = ''): { gender: NexusGender; id: str
       const gender = raw.slice(0, i);
       const id = raw.slice(i + 1);
       if ((gender === 'male' || gender === 'female') && id) {
-        const pick = { gender, id };
-        rememberToon(pick);
-        return pick;
+        const pick = { gender, id }; rememberToon(pick); return pick;
       }
     }
   } catch { /* */ }
@@ -122,9 +118,7 @@ const NEXUS_THIRD_PERSON: NonNullable<SceneConfig['viewMode']> = {
 };
 const mountF8Editor = (viz: Viz, sceneConf: SceneConfig) => {
   if (typeof window === 'undefined') return;
-  let open = false;
-  let host: HTMLDivElement | null = null;
-  let comp: ReturnType<typeof mount> | null = null;
+  let open = false; let host: HTMLDivElement | null = null; let comp: ReturnType<typeof mount> | null = null;
   const close = () => { if (comp) { unmount(comp); comp = null; } host?.remove(); host = null; open = false; };
   const toggle = (evt?: KeyboardEvent) => {
     evt?.preventDefault();
@@ -132,8 +126,7 @@ const mountF8Editor = (viz: Viz, sceneConf: SceneConfig) => {
     document.exitPointerLock?.();
     host = document.createElement('div');
     document.body.appendChild(host);
-    const seed = readNexusPlayPhysics() ?? physicsFromScene(sceneConf);
-    comp = mount(NexusPlayEditor, { target: host, props: { viz, initial: seed } });
+    comp = mount(NexusPlayEditor, { target: host, props: { viz, initial: readNexusPlayPhysics() ?? physicsFromScene(sceneConf) } });
     open = true;
   };
   sceneConf.customControlsEntries = [...(sceneConf.customControlsEntries ?? []), { key: 'f8', label: 'Mobility editor', action: toggle }];
@@ -172,7 +165,7 @@ export async function hydrateNexusPlay(viz: Viz, sceneConf: SceneConfig, sceneDe
     try {
       sceneConf.player.mesh = await loadNexusPlayBody(viz, { height: collider.height, radius: collider.radius, centerToFeet });
     } catch (err) {
-      console.warn('[nexus] play body unavailable on this scene — capsule-only', err);
+      console.warn('[nexus] play body unavailable on this scene', err);
     }
   }
   const mesh = sceneConf.player.mesh;
@@ -189,57 +182,26 @@ function pickClipName(names: string[], want: string): string | null {
   }
   return names[0] ?? null;
 }
-function flipIfHeadBelowHips(model: THREE.Object3D) {
-  let hips: THREE.Object3D | null = null;
-  let head: THREE.Object3D | null = null;
-  model.traverse((o) => {
-    const n = o.name.toLowerCase();
-    if (!hips && /hips$/.test(n)) hips = o;
-    if (!head && /(^|:)head$/.test(n)) head = o;
-  });
-  if (!hips || !head) return;
-  model.updateMatrixWorld(true);
-  const hy = hips.getWorldPosition(new THREE.Vector3()).y;
-  const hd = head.getWorldPosition(new THREE.Vector3()).y;
-  if (hd < hy) {
-    model.rotation.x = Math.PI;
-    model.updateMatrixWorld(true);
-    const hd2 = head.getWorldPosition(new THREE.Vector3()).y;
-    const hy2 = hips.getWorldPosition(new THREE.Vector3()).y;
-    if (hd2 < hy2) model.rotation.x = 0;
-    model.updateMatrixWorld(true);
-  }
-}
 export async function loadNexusPlayBody(
   viz: Viz,
   opts: { height: number; radius: number; centerToFeet: number }
 ): Promise<THREE.Group> {
   const pick = parseNexusToonQuery(typeof location !== 'undefined' ? location.search : '');
-  const url = `${CDN_PREFIX}/${pick.gender}/${pick.id}.gltf`;
-  const loader = new GLTFLoader();
-  const gltf = await loader.loadAsync(url);
+  const gltf = await new GLTFLoader().loadAsync(`${CDN_PREFIX}/${pick.gender}/${pick.id}.gltf`);
   const root = new THREE.Group();
   root.name = `NexusPlayBody_${pick.gender}_${pick.id}`;
   const model = gltf.scene;
-  model.traverse(o => {
-    if ((o as THREE.Mesh).isMesh) { o.castShadow = true; o.receiveShadow = true; }
-  });
-  model.rotation.set(0, 0, 0);
-  model.position.set(0, 0, 0);
-  model.scale.set(Math.abs(model.scale.x) || 1, Math.abs(model.scale.y) || 1, Math.abs(model.scale.z) || 1);
-  model.updateMatrixWorld(true);
-  flipIfHeadBelowHips(model);
+  model.traverse(o => { if ((o as THREE.Mesh).isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   const totalH = opts.height + 2 * opts.radius;
   const box = new THREE.Box3().setFromObject(model);
   const authorH = Math.max(0.01, box.max.y - box.min.y);
-  model.scale.setScalar(Math.abs(totalH / authorH));
+  model.scale.setScalar(totalH / authorH);
   model.updateMatrixWorld(true);
   const box2 = new THREE.Box3().setFromObject(model);
   model.position.y = -opts.centerToFeet - box2.min.y;
   model.position.x -= (box2.min.x + box2.max.x) * 0.5;
   model.position.z -= (box2.min.z + box2.max.z) * 0.5;
   root.add(model);
-  root.rotation.set(0, 0, 0);
   const mixer = new THREE.AnimationMixer(model);
   const clips = gltf.animations || [];
   const names = clips.map(c => c.name);
@@ -265,10 +227,7 @@ export async function loadNexusPlayBody(
     _fwd.y = 0;
     if (_fwd.lengthSq() > 1e-6) {
       _fwd.normalize();
-      root.rotation.set(0, Math.atan2(_fwd.x, _fwd.z), 0);
-    } else {
-      root.rotation.x = 0;
-      root.rotation.z = 0;
+      root.rotation.y = Math.atan2(_fwd.x, _fwd.z);
     }
     const grounded = fp.playerStateGetters.getIsOnGround();
     const speed = fp.playerStateGetters.getTotalVelocityMagnitude();
